@@ -13,7 +13,9 @@ class StudentAdapter(
   private val onDelete: (StudentModel) -> Unit
 ) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
-  inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  var selectedPosition: Int = -1  // Biến lưu vị trí của mục được chọn trong context menu
+
+  inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener {
     val textStudentName: TextView = itemView.findViewById(R.id.text_student_name)
     val textStudentId: TextView = itemView.findViewById(R.id.text_student_id)
     val imageEdit: ImageView = itemView.findViewById(R.id.image_edit)
@@ -23,8 +25,23 @@ class StudentAdapter(
       textStudentName.text = student.studentName
       textStudentId.text = student.studentId
 
+      // Xử lý sự kiện nhấn vào nút chỉnh sửa và xóa
       imageEdit.setOnClickListener { onEdit(student) }
       imageRemove.setOnClickListener { onDelete(student) }
+
+      // Đăng ký context menu cho itemView
+      itemView.setOnCreateContextMenuListener(this)
+
+      // Lưu vị trí của item được chọn
+      itemView.setOnLongClickListener {
+        selectedPosition = adapterPosition
+        false // Trả về false để hiển thị context menu
+      }
+    }
+
+    // Tạo context menu
+    override fun onCreateContextMenu(menu: android.view.ContextMenu?, v: View?, menuInfo: android.view.ContextMenu.ContextMenuInfo?) {
+      // Context menu được tạo trong MainActivity
     }
   }
 
